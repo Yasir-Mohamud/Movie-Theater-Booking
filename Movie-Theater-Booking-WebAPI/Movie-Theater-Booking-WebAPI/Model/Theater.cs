@@ -9,10 +9,10 @@ namespace Movie_Theater_Booking_WebAPI.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string StreetAddress { get; set; }
+        public string Address { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Phone { get; set; }
-        public int BusinessHours { get; set; }
+        public string BusinessHours { get; set; }
     }
 }
