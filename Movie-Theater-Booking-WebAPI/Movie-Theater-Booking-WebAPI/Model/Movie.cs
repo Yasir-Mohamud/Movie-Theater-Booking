@@ -12,5 +12,8 @@ namespace Movie_Theater_Booking_WebAPI.Model
         public string Description { get; set; }
         public string Duration { get; set; }
         public string Rating { get; set; }
+
+        // Navigation Properties
+        public List<RoomToMovie> roomToMovies { get; set; }
     }
 }

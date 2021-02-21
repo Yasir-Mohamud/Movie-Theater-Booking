@@ -14,5 +14,8 @@ namespace Movie_Theater_Booking_WebAPI.Model
         public string State { get; set; }
         public string Phone { get; set; }
         public string BusinessHours { get; set; }
+
+        // Navigation Properties
+        public List<TheaterToRoom> theaterToRooms { get; set; }
     }
 }
