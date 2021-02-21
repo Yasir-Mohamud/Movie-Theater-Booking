@@ -11,5 +11,9 @@ namespace Movie_Theater_Booking_WebAPI.Model
         public int Seats { get; set; }
         public int RoomNumber { get; set; }
         public int Floor { get; set; }
+
+        // Navigation Properties
+        public List<TheaterToRoom> theaterToRooms { get; set; }
+        public List<RoomToMovie> roomToMovies { get; set; }
     }
 }
