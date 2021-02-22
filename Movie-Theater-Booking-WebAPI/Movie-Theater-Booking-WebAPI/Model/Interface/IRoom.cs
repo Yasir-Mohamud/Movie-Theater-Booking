@@ -7,9 +7,10 @@ namespace Movie_Theater_Booking_WebAPI.Model.Interface
 {
    public interface IRoom
     {
-        Task<Room> CreateMovie(Room room);
-        Task<Room> GetMovie(int id);
-        Task<Room> UpdateMovie(Room room);
+        Task<Room> CreateRoom(Room room);
+        Task<Room> GetRoom(int id);
+        Task<List<Room>> GetAllRooms();
+        Task<Room> UpdateRoom(Room room);
         Task Delete(int id);
     }
 }

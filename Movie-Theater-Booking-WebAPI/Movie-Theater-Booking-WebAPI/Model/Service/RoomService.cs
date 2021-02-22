@@ -22,24 +22,39 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
             _context = context;
         }
 
-        public Task<Room> CreateMovie(Room room)
+        public async Task<Room> CreateRoom(Room room)
         {
-            _context.Entry(room).State = EntityState.Added;
+            _context.Entry(room).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return room;
         }
 
-        public Task Delete(int id)
+
+        public async Task<Room> GetRoom(int id)
         {
-            throw new NotImplementedException();
+            Room room = await _context.Rooms.Where(x => x.Id == id)
+                                          .FirstOrDefaultAsync();
+            return room;
         }
 
-        public Task<Room> GetMovie(int id)
+        public async Task<List<Room>> GetAllRooms()
         {
-            throw new NotImplementedException();
+            var room = await _context.Rooms.ToListAsync();
+            return room;
         }
 
-        public Task<Room> UpdateMovie(Room room)
+        public async Task<Room> UpdateRoom(Room room)
         {
-            throw new NotImplementedException();
+            _context.Entry(room).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return room;
+        }
+
+        public async Task Delete(int id)
+        {
+            Movie movie = await _context.Movies.FindAsync(id);
+            _context.Entry(movie).State = EntityState.Deleted;
+            await _context.SaveChangesAsync();
         }
     }
 }
