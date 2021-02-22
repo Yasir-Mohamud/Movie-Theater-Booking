@@ -35,6 +35,12 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
             return movie;
         }
 
+        public async Task<List<Movie>> GetAllMovies()
+        {
+            var movies = await _context.Movies.ToListAsync();
+            return movies;
+        }
+
         public async Task<Movie> UpdateMovie (Movie movie)
         {
             _context.Entry(movie).State = EntityState.Modified;
