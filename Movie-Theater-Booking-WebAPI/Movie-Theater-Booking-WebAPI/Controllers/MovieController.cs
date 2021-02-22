@@ -26,21 +26,21 @@ namespace Movie_Theater_Booking_WebAPI.Controllers
 
         // GET: api/<MovieController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<Movie>>> GetAll()
         {
-            return new string[] { "value1", "value2" };
+            return await _movie.GetAllMovies();
         }
 
         // GET api/<MovieController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<Movie>> Get(int id)
         {
             return await _movie.GetMovie(id);
         }
 
         // POST api/<MovieController>
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<Movie>> Post(Movie movie)
         {
             await _movie.CreateMovie(movie);
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
@@ -48,7 +48,7 @@ namespace Movie_Theater_Booking_WebAPI.Controllers
 
         // PUT api/<MovieController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie (int id, Movie movie)
+        public async Task<IActionResult> Put (int id, Movie movie)
         {
             if (id != movie.Id)
             {
@@ -62,7 +62,7 @@ namespace Movie_Theater_Booking_WebAPI.Controllers
 
         // DELETE api/<MovieController>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Movie>> DeleteMovie(int id)
+        public async Task<ActionResult<Movie>> Delete(int id)
         {
             await _movie.Delete(id);
             return NoContent();

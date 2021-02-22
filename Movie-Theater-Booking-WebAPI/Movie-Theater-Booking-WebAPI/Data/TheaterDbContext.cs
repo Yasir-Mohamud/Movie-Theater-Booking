@@ -17,7 +17,8 @@ namespace Movie_Theater_Booking_WebAPI.Data
          protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            modelBuilder.Entity<RoomToMovie>().HasKey(x => new { x.RoomId, x.MovieId });
+            modelBuilder.Entity<TheaterToRoom>().HasKey(x => new { x.RoomId, x.TheaterId });
             modelBuilder.Entity<Movie>().HasData(
                 new Movie
                 {
@@ -64,5 +65,7 @@ namespace Movie_Theater_Booking_WebAPI.Data
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Theater> Theaters { get; set; }
         public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomToMovie> RoomToMovies { get; set; }
+        public DbSet<TheaterToRoom> TheaterToRooms { get; set; }
     }
 }           
