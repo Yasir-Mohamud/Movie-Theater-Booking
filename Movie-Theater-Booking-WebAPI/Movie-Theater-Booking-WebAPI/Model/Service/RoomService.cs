@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Movie_Theater_Booking_WebAPI.Data;
+using Movie_Theater_Booking_WebAPI.Model.DTO;
 using Movie_Theater_Booking_WebAPI.Model.Interface;
 using System;
 using System.Collections.Generic;
@@ -22,38 +23,86 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
             _context = context;
         }
 
-        public async Task<Room> CreateRoom(Room room)
+        public async Task<RoomDTO> CreateRoom(RoomDTO roomdto)
         {
+            Room room = new Room
+            {
+                RoomNumber = roomdto.RoomNumber,
+                Floor = roomdto.Floor,
+                Seats = roomdto.Seats,
+            };
             _context.Entry(room).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return room;
+            return roomdto;
         }
 
 
-        public async Task<Room> GetRoom(int id)
+        public async Task<RoomDTO> GetRoom(int id)
         {
-            Room room = await _context.Rooms.Where(x => x.Id == id)
-                                          .FirstOrDefaultAsync();
-            return room;
+            Room room = await _context.Rooms.FindAsync(id);
+            // add all movies in the room
+            var roomMovies = await _context.RoomToMovies.Where(x => x.RoomId == id)
+                                                        .Include(x => x.movie)
+                                                        .FirstOrDefaultAsync();
+                                          
+            RoomDTO roomdto = new RoomDTO
+            {
+                RoomNumber = room.RoomNumber,
+                Floor = room.Floor,
+                Seats = room.Seats,
+                RoomToMovies = roomMovies,
+            };
+        
+
+            return roomdto;
         }
 
-        public async Task<List<Room>> GetAllRooms()
+        public async Task<List<RoomDTO>> GetAllRoomDTOs()
         {
-            var room = await _context.Rooms.ToListAsync();
-            return room;
+            var rooms = await _context.Rooms.ToListAsync();
+            var roomdto = new List<RoomDTO>();
+            foreach(var room in rooms)
+            {
+                roomdto.Add(await GetRoom(room.Id));
+            }
+            return roomdto;
         }
 
-        public async Task<Room> UpdateRoom(Room room)
+        public async Task<RoomDTO> UpdateRoom(RoomDTO roomdto)
         {
+            Room room = new Room
+            {
+                RoomNumber = roomdto.RoomNumber,
+                Floor = roomdto.Floor,
+                Seats = roomdto.Seats,
+            };
             _context.Entry(room).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return room;
+            return roomdto;
         }
 
         public async Task Delete(int id)
         {
-            Movie movie = await _context.Movies.FindAsync(id);
-            _context.Entry(movie).State = EntityState.Deleted;
+            Room room = await _context.Rooms.FindAsync(id);
+            _context.Entry(room).State = EntityState.Deleted;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddRoomToMovie (int roomId, int movieId)
+        {
+            RoomToMovie roomToMovie = new RoomToMovie
+            {
+                RoomId = roomId,
+                MovieId = movieId,
+            };
+            _context.Entry(roomToMovie).State = EntityState.Added;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveRoomToMovie (int roomId, int movieId)
+        {
+            var roomToMovie =  _context.RoomToMovies.Where(x => x.RoomId == roomId && x.MovieId == movieId);
+            _context.Entry(roomToMovie).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
         }
     }
