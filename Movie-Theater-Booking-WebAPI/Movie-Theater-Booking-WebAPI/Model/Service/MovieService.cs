@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Movie_Theater_Booking_WebAPI.Data;
+using Movie_Theater_Booking_WebAPI.Model.DTO;
 using Movie_Theater_Booking_WebAPI.Model.Interface;
 using System;
 using System.Collections.Generic;
@@ -21,31 +22,62 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
             _context = context;
         }
 
-        public async Task<Movie> CreateMovie (Movie movie)
+        public async Task<MovieDTO> CreateMovie (MovieDTO moviedto)
         {
+            Movie movie = new Movie
+            {
+                Name = moviedto.Name,
+                Description = moviedto.Description,
+                Duration = moviedto.Duration,
+                Rating = moviedto.Rating
+            };
+
             _context.Entry(movie).State = EntityState.Added;
             await _context.SaveChangesAsync();
-            return movie;
+            return moviedto;
         }
 
-        public async Task<Movie> GetMovie(int id)
+        public async Task<MovieDTO> GetMovie(int id)
         {
+            
             Movie movie = await _context.Movies.Where(x => x.Id == id)
                                           .FirstOrDefaultAsync();
-            return movie;
+
+            MovieDTO moviedto = new MovieDTO
+            {
+                Name = movie.Name,
+                Description = movie.Description,
+                Duration = movie.Duration,
+                Rating = movie.Rating
+            };
+            return moviedto;
         }
 
-        public async Task<List<Movie>> GetAllMovies()
+        public async Task<List<MovieDTO>> GetAllMovies()
         {
             var movies = await _context.Movies.ToListAsync();
-            return movies;
+            var moviedto = new List<MovieDTO>();
+
+            foreach(var movie in movies)
+            {
+                moviedto.Add(await GetMovie(movie.Id));
+            }
+            return moviedto;
         }
 
-        public async Task<Movie> UpdateMovie (Movie movie)
+        public async Task<MovieDTO> UpdateMovie (MovieDTO moviedto)
         {
+            Movie movie = new Movie 
+            {
+                Name = moviedto.Name,
+                Description = moviedto.Description,
+                Duration = moviedto.Duration,
+                Rating = moviedto.Rating
+            };
+
             _context.Entry(movie).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return movie;
+            return moviedto;
         }
 
         public async Task Delete(int id)
