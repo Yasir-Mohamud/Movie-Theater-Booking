@@ -13,6 +13,6 @@ namespace Movie_Theater_Booking_WebAPI.Model.DTO
         public int Floor { get; set; }
 
         // Navigation Property
-        public RoomToMovie RoomToMovies { get; set; }
+        public MovieDTO moviedto { get; set; }
     }
 }

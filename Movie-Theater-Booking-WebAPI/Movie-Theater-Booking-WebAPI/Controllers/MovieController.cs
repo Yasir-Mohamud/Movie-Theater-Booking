@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Movie_Theater_Booking_WebAPI.Model;
+using Movie_Theater_Booking_WebAPI.Model.DTO;
 using Movie_Theater_Booking_WebAPI.Model.Interface;
 using System;
 using System.Collections.Generic;
@@ -26,36 +27,36 @@ namespace Movie_Theater_Booking_WebAPI.Controllers
 
         // GET: api/<MovieController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetAll()
+        public async Task<ActionResult<IEnumerable<MovieDTO>>> GetAll()
         {
             return await _movie.GetAllMovies();
         }
 
         // GET api/<MovieController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> Get(int id)
+        public async Task<ActionResult<MovieDTO>> Get(int id)
         {
             return await _movie.GetMovie(id);
         }
 
         // POST api/<MovieController>
         [HttpPost]
-        public async Task<ActionResult<Movie>> Post(Movie movie)
+        public async Task<ActionResult<MovieDTO>> Post(MovieDTO moviedto)
         {
-            await _movie.CreateMovie(movie);
-            return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
+            await _movie.CreateMovie(moviedto);
+            return CreatedAtAction("GetMovie", new { id = moviedto.Id }, moviedto);
         }
 
         // PUT api/<MovieController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put (int id, Movie movie)
+        public async Task<IActionResult> Put (int id, MovieDTO moviedto)
         {
-            if (id != movie.Id)
+            if (id != moviedto.Id)
             {
                 return BadRequest();
             }
 
-            var updatedMovie = await _movie.UpdateMovie(movie);
+            var updatedMovie = await _movie.UpdateMovie(moviedto);
 
             return Ok(updatedMovie);
         }

@@ -16,6 +16,6 @@ namespace Movie_Theater_Booking_WebAPI.Model.DTO
         public string BusinessHours { get; set; }
 
         // Navigation Properties
-        public List<RoomDTO> Roomdto { get; set; }
+        public List<TheaterToRoom> theaterToRooms { get; set; }
     }
 }
