@@ -13,14 +13,16 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
     {
 
         private TheaterDbContext _context;
+        private readonly IMovie _movie;
 
         /// <summary>
         /// injects the db into the class
         /// </summary>
         /// <param name="context"> Database</param>
-        public RoomService(TheaterDbContext context)
+        public RoomService(TheaterDbContext context , IMovie movie)
         {
             _context = context;
+            _movie = movie;
         }
 
         public async Task<RoomDTO> CreateRoom(RoomDTO roomdto)
@@ -31,7 +33,7 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
                 Floor = roomdto.Floor,
                 Seats = roomdto.Seats,
             };
-            _context.Entry(room).State = EntityState.Modified;
+            _context.Entry(room).State = EntityState.Added;
             await _context.SaveChangesAsync();
             return roomdto;
         }
@@ -44,20 +46,21 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
             var roomMovies = await _context.RoomToMovies.Where(x => x.RoomId == id)
                                                         .Include(x => x.movie)
                                                         .FirstOrDefaultAsync();
-                                          
+            MovieDTO movieDto = await _movie.GetMovie(roomMovies.MovieId);
             RoomDTO roomdto = new RoomDTO
             {
+
                 RoomNumber = room.RoomNumber,
                 Floor = room.Floor,
                 Seats = room.Seats,
-                RoomToMovies = roomMovies,
+                moviedto = movieDto,
             };
         
 
             return roomdto;
         }
 
-        public async Task<List<RoomDTO>> GetAllRoomDTOs()
+        public async Task<List<RoomDTO>> GetAllRooms()
         {
             var rooms = await _context.Rooms.ToListAsync();
             var roomdto = new List<RoomDTO>();
@@ -72,6 +75,7 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
         {
             Room room = new Room
             {
+               
                 RoomNumber = roomdto.RoomNumber,
                 Floor = roomdto.Floor,
                 Seats = roomdto.Seats,

@@ -14,6 +14,6 @@ namespace Movie_Theater_Booking_WebAPI.Model
 
         // Navigation Properties
         public List<TheaterToRoom> theaterToRooms { get; set; }
-        public List<RoomToMovie> roomToMovies { get; set; }
+        public RoomToMovie roomToMovies { get; set; }
     }
 }

@@ -13,5 +13,7 @@ namespace Movie_Theater_Booking_WebAPI.Model.Interface
         Task<List<RoomDTO>> GetAllRooms();
         Task<RoomDTO> UpdateRoom(RoomDTO roomdto);
         Task Delete(int id);
+        Task AddRoomToMovie(int roomId, int movieId);
+        Task RemoveRoomToMovie(int roomId, int movieId);
     }
 }
