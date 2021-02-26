@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Movie_Theater_Booking_WebAPI.Data;
+using Movie_Theater_Booking_WebAPI.Model.DTO;
 using Movie_Theater_Booking_WebAPI.Model.Interface;
 using System;
 using System.Collections.Generic;
@@ -20,31 +21,74 @@ namespace Movie_Theater_Booking_WebAPI.Model.Service
         {
             _context = context;
         }
-        public async Task<Theater> CreateTheater(Theater theater)
+        public async Task<TheaterDTO> CreateTheater(TheaterDTO theaterdto)
         {
+            Theater theater = new Theater 
+            {
+                Name = theaterdto.Name,
+                Address = theaterdto.Address,
+                City = theaterdto.City,
+                State = theaterdto.State,
+                BusinessHours = theaterdto.BusinessHours,
+                Phone = theaterdto.Phone
+            };
+
             _context.Entry(theater).State = EntityState.Added;
             await _context.SaveChangesAsync();
-            return theater;
+            return theaterdto;
         }
 
        
 
-        public async Task<Theater> GetTheater(int id)
+        public async Task<TheaterDTO> GetTheater(int id)
         {
             Theater theater = await _context.Theaters.Where(x => x.Id == id)
-                                         .FirstOrDefaultAsync();
-            return theater;
+                                            .Include(x => x.theaterToRooms)
+                                            .ThenInclude(x => x.room)
+                                            .ThenInclude(x => x.roomToMovies)
+                                            .ThenInclude(x => x.movie)
+                                            .FirstOrDefaultAsync();
+          
+            TheaterDTO theaterdto = new TheaterDTO
+            {
+                Name = theater.Name,
+                Address = theater.Address,
+                City = theater.City,
+                State = theater.State,
+                BusinessHours = theater.BusinessHours,
+                Phone = theater.Phone,
+                theaterToRooms = theater.theaterToRooms
+            };
+
+
+
+            return theaterdto;
         }
-        public async Task<List<Theater>> GetAllTheaters()
+        public async Task<List<TheaterDTO>> GetAllTheaters()
         {
-            var theater = await _context.Theaters.ToListAsync();
-            return theater;
+            var theaters = await _context.Theaters.ToListAsync();
+            var theaterdto = new List<TheaterDTO>();
+            foreach(var theater in theaters)
+            {
+                theaterdto.Add(await GetTheater(theater.Id));
+            }
+            return theaterdto;
         }
-        public async Task<Theater> UpdateTheater(Theater theater)
+        public async Task<TheaterDTO> UpdateTheater(TheaterDTO theaterdto)
         {
+            Theater theater = new Theater
+            {
+                Name = theaterdto.Name,
+                Address = theaterdto.Address,
+                City = theaterdto.City,
+                State = theaterdto.State,
+                BusinessHours = theaterdto.BusinessHours,
+                Phone = theaterdto.Phone
+            };
+
             _context.Entry(theater).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return theater;
+            return theaterdto;
         }
 
         public async Task Delete(int id)
